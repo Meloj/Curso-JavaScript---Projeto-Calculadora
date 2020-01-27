@@ -58,24 +58,29 @@ class CalcController{
     addOperation(value){
 
         if (isNaN(this.getLastOperation())) {
-            //string
+
             if(this.isOperator(value)) {
-                //trocar operador
+
                 this._operation[this._operation.length - 1] = value;
             }
-            else {
-                //outra coisa
+            else if(isNaN(value)) {
+
                 console.log(value);
 
             }
+            else {
+                this._operation.push(value);
+            }
         }
         else {
-            //number
+            
            let newValue = this.getLastOperation().toString() + value.toString();
            this._operation.push(newValue);
         }
 
-        this._operation.push(value);
+
+
+        console.log(value);
     }
 
     setError(){
@@ -90,39 +95,30 @@ class CalcController{
             case 'ac':
                 this.clearAll();
                 break;
-
             case 'ce':
                 this.clearEntry();
                 break;   
-
             case 'soma':
                 this.addOperation('+');
                 break;
-
             case 'subtracao':
                 this.addOperation('-');
                 break;
-
             case 'divisao':
                 this.addOperation('/');
                 break;
-
             case 'multiplicacao':
                 this.addOperation('*');
                 break;
-
             case 'porcento':
                 this.addOperation('%');
                 break;
-
             case 'igual':
                 this.addOperation('=');
                 break;
-
             case 'ponto':
                 this.addOperation('.');
                 break;
-
             case '0':
             case '1':
             case '2':
@@ -133,13 +129,11 @@ class CalcController{
             case '7':
             case '8':
             case '9':
-                this.addOperation(parseInt(value));                                        
+                this.addOperation(parseInt(value));                                     
                 break;
-
             default:
                 this.setError();
                 break;
-
         }
     }
 
@@ -154,8 +148,8 @@ class CalcController{
 
                 let textBtn = btn.className.baseVal.replace("btn-","");
 
-                this.execBtn();
-
+                this.execBtn(textBtn);
+                //console.log(btn.className.baseVal.replace("btn-",""))
             });
         this.addEventListenerAll(btn, "mouseover mouseup mousedown", e => {
 
