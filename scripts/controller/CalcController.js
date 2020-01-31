@@ -2,6 +2,8 @@ class CalcController{
 
     constructor(){
 
+        this._lastOperator = '';
+        this._lasNumber = '';
         this._operation = [];
         this._locale = 'pt-BR';
         this._displayCalcEl = document.querySelector("#display");
@@ -19,6 +21,9 @@ class CalcController{
             this.setDisplayDateTime();
 
         },1000);
+
+        this.setLastNumberToDisplay();
+
     }
 
     addEventListenerAll(element, events, fn){
@@ -35,11 +40,15 @@ class CalcController{
 
         this._operation = [];
 
+        this.setLastNumberToDisplay();
+
     }
 
     clearEntry(){
 
         this._operation.pop();
+
+        this.setLastNumberToDisplay();
 
     }
 
@@ -73,27 +82,79 @@ class CalcController{
 
     }
 
+    getResult() {
+
+        return eval(this._operation.join(""));
+
+    }
+
+
     calc() {
 
-        let last = this._operation.pop();
+        let last = '';
 
+        if( this._operation.length > 3 ) {
+            last = this._operation.pop();
+
+            //this._lasNumbert = this.getResult();
+
+        }
+
+        //let result = this.getResult();
         let result = eval(this._operation.join(""));
 
-        this._operation = [result, last];
+        if (last == '%') {
+
+            result /= 100;
+
+            this._operation = [result];
+
+        }
+
+        else{
+
+            this._operation = [result];
+
+            if (last) this._operation.push(last);
+
+        }
 
         this.setLastNumberToDisplay();
     }
+
+    getLastItem(isOperator = true){
+
+        let lastItem;
+
+        for(let i = this._operation.length-1; i>=0; i--) {
+
+            if(isOperator = true) {
+
+                if(this.isOperator(this._operation[i])) {
+                    lastnumber = this._operation[i];
+                    break;
+                }
+            }
+
+            else {
+
+                if(!this.isOperator(this._operation[i])) {
+                    lastnumber = this._operation[i];
+                    break;
+                }    
+            }
+
+        }
+
+        return lastItem;
+    }
+
 
     setLastNumberToDisplay() {
 
         let lastnumber;
 
-        for(let i = this._operation.length-1; i>=0; i--) {
-            if(!this.isOperator(this._operation[i])) {
-                lastnumber = this._operation[i];
-                break;
-            }
-        }
+        if (!lastnumber) lastnumber = 0;
 
         this.displayCalc = lastnumber;
     }
@@ -118,7 +179,7 @@ class CalcController{
             }
         }
         else {
-
+ 
             if (this.isOperator(value)) {
 
                 this.pushOperation(value);
@@ -131,7 +192,7 @@ class CalcController{
 
                 this.setLastNumberToDisplay();
             }
-            
+            eval(this._operation.join(""));
         }
 
     }
@@ -167,7 +228,7 @@ class CalcController{
                 this.addOperation('%');
                 break;
             case 'igual':
-                this.addOperation('=');
+                this.calc();
                 break;
             case 'ponto':
                 this.addOperation('.');
